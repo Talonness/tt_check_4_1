@@ -8,7 +8,6 @@ from app import create_app
 
 BASE_URL = "http://localhost:5000/api/tasks"
 
-
 # Mock service for isolated route tests (keep for unit/mocked tests)
 class MockTaskService:
     """Mock implementation of TaskService for testing routes without file I/O."""
@@ -87,4 +86,3 @@ def reset_tasks(client):
     except Exception:
         with open(TASKS_FILE, "w") as f:
             json.dump([], f)
-
