@@ -1,0 +1,94 @@
+name: Sprint Sub-Issue
+description: Use for individual user stories, refactors, testing, or documentation tasks under a Sprint Epic
+title: "[Sprint <#>] <Sub-Issue Title>"
+labels: [sub-issue, task]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧩 Sprint Sub-Issue
+        This issue represents a discrete task under a Sprint Epic (e.g., a user story, refactor, or test requirement).  
+        Sub-issues may be further broken down into GitHub sub-issues (atomic tasks).
+
+  - type: input
+    id: parent_epic
+    attributes:
+      label: 🔗 Parent Epic
+      description: Link the parent Sprint Epic (e.g., #123)
+      placeholder: "#<Epic Issue Number>"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 📂 Type of Work
+      description: Choose the most relevant category for this sub-issue.
+      options:
+        - User Story (USxxx)
+        - Refactor (RFxxx)
+        - Test / Regression Test
+        - Manual Testing (Postman / CLI)
+        - CI / GitHub Actions
+        - Documentation
+    validations:
+      required: true
+
+  - type: input
+    id: reference_code
+    attributes:
+      label: 🗂️ Related Code or Docs Path
+      description: (Optional) File or directory relevant to this task
+      placeholder: e.g., routes/tasks.py, services/storage.py, tests/tasks/
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 🧾 Description
+      description: Briefly describe the task and its expected outcome. For user stories, include the “As a user…” context if applicable.
+      placeholder: |
+        Implement PUT /api/tasks/<id> to mark a task complete. This supports US005.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: ✅ Acceptance Criteria
+      description: 
+        If this task supports a User Story, paste the relevant criteria from `tt_user_stories.md`. 
+        For other task types, write specific technical or validation goals.
+      placeholder: |
+        - PUT /api/tasks/<id> sets completed = true
+        - Invalid IDs return 404
+        - Covered by unit tests
+    validations:
+      required: true
+
+  - type: textarea
+    id: sub_issues
+    attributes:
+      label: 🔧 Sub-Tasks or Sub-Issues
+      description: List atomic tasks or create sub-issues from this item (e.g., implementation, testing, documentation).
+      placeholder: |
+        - Implement route logic
+        - Write unit tests
+        - Verify via Postman
+        - Update API documentation
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: definition_of_done
+    attributes:
+      label: 📐 Definition of Done Checklist
+      description: Confirm the following are complete before moving this task to "In Review"
+      options:
+        - label: Feature branch committed
+        - label: Tests pass locally and on CI
+        - label: Documentation updated
+        - label: Pull Request created and reviewed

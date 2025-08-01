@@ -1,0 +1,69 @@
+name: Sprint Epic
+description: Create a parent issue to track a Sprint Epic with Acceptance Criteria and Definition of Done
+title: "[Sprint <#>] <Epic Title>"
+labels: [epic, sprint]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📌 Sprint Epic Overview
+        Use this issue to track the progress of a Sprint-level feature, refactor, or technical implementation. This is the **parent epic** and will be broken down into linked sub-issues (e.g., user stories, refactors, test coverage, documentation).
+
+  - type: input
+    id: sprint
+    attributes:
+      label: 🏁 Sprint Number
+      description: Which sprint is this issue part of?
+      placeholder: "Sprint 1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 🧾 Description
+      description: Provide a short explanation of this epic (e.g., its purpose or user story context).
+      placeholder: "This epic focuses on..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: sprint_acceptance_criteria
+    attributes:
+      label: ✅ Sprint-Level Acceptance Criteria
+      description: Paste the full sprint-level acceptance criteria from the Sprint Plan (these help guide what sub-issues should be created).
+      placeholder: |
+        - All user stories (US004, US005, etc.) are marked Done
+        - Core task operations persist to file
+        - Refactors RF001–RF003 are completed
+        - CI workflows and test coverage requirements are met
+    validations:
+      required: true
+
+  - type: textarea
+    id: definition_of_done
+    attributes:
+      label: 📐 Definition of Done
+      description: Paste the Definition of Done from the Sprint Plan.
+      placeholder: |
+        - Code committed to feature branch
+        - Tests pass locally and on CI
+        - Documentation is updated
+        - Code merged via Pull Request
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔧 Sub-Issues
+        After creating this epic, break it into sub-issues using GitHub’s **linked issues** feature.
+
+        These may include:
+
+        - ✅ **User Stories (e.g., US004)** → See detailed acceptance criteria in [`tt_user_stories.md`](../tt_user_stories.md)
+        - 🛠️ **Refactors (e.g., RF001, RF002)** for modularization and architecture
+        - 🧪 **Testing and Regression Coverage**
+        - 📝 **Documentation Updates** (README, test plan, API docs)
