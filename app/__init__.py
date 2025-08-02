@@ -21,14 +21,10 @@ def create_app(service=None):
 
     # 🔧 Database Setup (only if no service provided via dependency injection)
     if service is None:
-        # Use in-memory database for testing to avoid permission issues
+        # Use file-based database for CI/testing and development/production
         import os
-        if os.getenv('TESTING') == 'true' or app.config.get('TESTING'):
-            # In-memory database for CI/testing
-            engine = create_engine("sqlite:///:memory:")
-        else:
-            # File-based database for development/production
-            engine = create_engine("sqlite:///tasks.db")
+        print(f"[DEBUG] TESTING={os.getenv('TESTING')}")
+        engine = create_engine("sqlite:///tasks.db")
         
         # Create session factory
         Session = sessionmaker(bind=engine)
