@@ -87,19 +87,13 @@
                 for i in {1..20}; do
                   if curl -s http://localhost:5000/api/health > /dev/null; then
                     echo "✅ Flask server is up and responding!"
-                    # Also test the API endpoint
-                    if curl -s http://localhost:5000/api/tasks > /dev/null; then
-                      echo "✅ API endpoint is working!"
-                      break
-                    else
-                      echo "❌ API endpoint not responding"
-                    fi
+                    break
                   fi
                   echo "Waiting for Flask server... (attempt $i/20)"
                   sleep 1
                 done
                 # Final check
-                if curl -s http://localhost:5000/api/health > /dev/null && curl -s http://localhost:5000/api/tasks > /dev/null; then
+                if curl -s http://localhost:5000/api/health > /dev/null; then
                   echo "✅ Server health check passed - API tests will run"
                 else
                   echo "❌ Server health check failed - API tests will be skipped"
@@ -116,7 +110,7 @@
                 export PYTHONWARNINGS="ignore:unclosed:ResourceWarning"
                 
                 # Check if server is working before running tests
-                if curl -s http://localhost:5000/api/health > /dev/null && curl -s http://localhost:5000/api/tasks > /dev/null; then
+                if curl -s http://localhost:5000/api/health > /dev/null; then
                   echo "✅ Server is working - running all tests including API integration tests"
                   pytest --cov=app --cov-report=term-missing
                 else
