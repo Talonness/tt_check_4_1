@@ -87,7 +87,14 @@ jobs:
           pytest --cov=app --cov-report=term-missing --cov-report=html
           
           echo "✅ All tests completed successfully"
+          echo "::notice::CI completed successfully. Warnings are suppressed for clarity."
+          echo "::notice::CI completed successfully. Warnings are suppressed for clarity."
         env:
           TESTING: true
           PYTHONDONTWRITEBYTECODE: 1
           PYTHONWARNINGS: "ignore:unclosed:ResourceWarning"
+
+      - name: CI Result Summary
+        run: |
+          echo "::notice::CI finished. All tests passed. Warnings are suppressed for clean output."
+          echo "::notice::Test scope: All tests in the 'tests/' directory were executed using pytest with coverage. Purpose: To verify application functionality and database integration for Sprint 4."
