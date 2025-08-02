@@ -54,7 +54,8 @@ jobs:
       - name: Start Flask server in background
         run: |
           export TESTING=true
-          nohup python -m app.main &
+          cd $GITHUB_WORKSPACE
+          nohup python -m app.main --no-debug --no-reload &
           sleep 3
 
       - name: Wait for Flask server to be ready

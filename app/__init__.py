@@ -32,6 +32,7 @@ def create_app(service=None):
         
         # Create database tables
         Base.metadata.create_all(engine)  # Creates database and tables
+        print("✅ Database tables created by Base.metadata.create_all(engine)")
         
         # Wire up the repository and service
         repo = DatabaseTaskRepository(Session)
