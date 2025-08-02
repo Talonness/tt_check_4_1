@@ -86,3 +86,35 @@ def reset_tasks(client):
     except Exception:
         with open(TASKS_FILE, "w") as f:
             json.dump([], f)
+
+# ============================================
+# 🔧 Database Setup for SQLAlchemy (Sprint 4)
+# ============================================
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from app.models.sqlalchemy_task import Base
+from app.repositories.database_task_repository import DatabaseTaskRepository
+from app.services.task_service import TaskService
+
+@pytest.fixture
+def session_factory():
+    """Provides a clean in-memory database session factory for SQLAlchemy tests."""
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    return sessionmaker(bind=engine)
+
+@pytest.fixture
+def database_test_app(session_factory):
+    """Creates a Flask app with a test database and injected service."""
+    repo = DatabaseTaskRepository(session_factory)
+    service = TaskService(repo)
+    app = create_app()
+    app.task_service = service
+    app.config["TESTING"] = True
+    return app
+
+@pytest.fixture
+def database_client(database_test_app):
+    """Flask test client using in-memory DB and DI-injected service."""
+    return database_test_app.test_client()
