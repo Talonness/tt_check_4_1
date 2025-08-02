@@ -36,6 +36,22 @@ def create_app(service=None):
         # Wire up the repository and service
         repo = DatabaseTaskRepository(Session)
         service = TaskService(repo)
+        
+        # Store engine reference for cleanup
+        app.database_engine = engine
+        
+        # Register cleanup function
+        @app.teardown_appcontext
+        def cleanup_db_connections(exception):
+            """Ensure database connections are properly closed."""
+            pass  # Sessions are closed in repository methods
+            
+        # Register app cleanup for engine disposal
+        import atexit
+        def dispose_engine():
+            if hasattr(app, 'database_engine'):
+                app.database_engine.dispose()
+        atexit.register(dispose_engine)
     
     # Inject the service into the app
     app.task_service = service
