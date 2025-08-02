@@ -89,4 +89,3 @@ jobs:
           PYTHONDONTWRITEBYTECODE: 1
           PYTHONWARNINGS: "ignore:unclosed:ResourceWarning"
 
-      # Removed custom CI summary and allowed-failures logic for standard pytest behavior

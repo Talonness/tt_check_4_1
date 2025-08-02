@@ -1,6 +1,7 @@
+# tests/conftest.py
 import warnings
 warnings.filterwarnings("ignore", category=ResourceWarning)
-# tests/conftest.py
+
 
 """
 Test configuration and fixtures for the Task Management Application.
