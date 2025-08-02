@@ -24,7 +24,7 @@ def create_app(service=None):
         # Use file-based database for CI/testing and development/production
         import os
         print(f"[DEBUG] TESTING={os.getenv('TESTING')}")
-        engine = create_engine("sqlite:///tasks.db")
+        engine = create_engine("sqlite:///./tasks.db")
         
         # Create session factory
         Session = sessionmaker(bind=engine)
