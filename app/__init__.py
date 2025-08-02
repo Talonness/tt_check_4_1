@@ -17,14 +17,20 @@ def create_app(service=None):
 
     # 🔧 Database Setup (only if no service provided via dependency injection)
     if service is None:
-        # Create SQLite database engine
-        engine = create_engine("sqlite:///tasks.db")
+        # Use in-memory database for testing to avoid permission issues
+        import os
+        if os.getenv('TESTING') == 'true' or app.config.get('TESTING'):
+            # In-memory database for CI/testing
+            engine = create_engine("sqlite:///:memory:")
+        else:
+            # File-based database for development/production
+            engine = create_engine("sqlite:///tasks.db")
         
         # Create session factory
         Session = sessionmaker(bind=engine)
         
         # Create database tables
-        Base.metadata.create_all(engine)  # Creates tasks.db and tables
+        Base.metadata.create_all(engine)  # Creates database and tables
         
         # Wire up the repository and service
         repo = DatabaseTaskRepository(Session)

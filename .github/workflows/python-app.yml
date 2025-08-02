@@ -50,12 +50,22 @@
                 pip install -r requirements.txt      # Install all Python packages listed in requirements.txt
       
 
-            # Step 4: Start Flask server in background
+            # Step 4: Prepare test environment for database integration
+            - name: Prepare test environment
+              run: |
+                # Create writable app/data directory for tests
+                mkdir -p app/data
+                chmod 755 app/data
+                # Ensure no existing database files interfere
+                rm -f tasks.db app/data/tasks.json
+                echo "Test environment prepared for Sprint 4 database integration"
+
+            # Step 5: Start Flask server in background  
             - name: Start Flask server in background
               run: |
                 nohup python -m app.main &
 
-            # Step 5: Wait for Flask server to be ready (health check loop)
+            # Step 6: Wait for Flask server to be ready (health check loop)
             - name: Wait for Flask server to be ready
               run: |
                 for i in {1..20}; do
@@ -67,9 +77,15 @@
                   sleep 1
                 done
 
-            # Step 6: Run tests with coverage tracking
+            # Step 7: Run tests with coverage tracking
             - name: Run tests with coverage
               run: |
+                # Set environment variables for testing
+                export TESTING=true
+                export PYTHONDONTWRITEBYTECODE=1
+                # Suppress ResourceWarnings for cleaner CI output (these are normal for educational code)
+                export PYTHONWARNINGS="ignore:unclosed:ResourceWarning"
+                # Run tests with proper permissions
                 pytest --cov=app --cov-report=term-missing
                 #  This runs pytest and measures how much of the 'app' folder is tested
                 # --cov=app → tracks coverage in the 'app' directory
