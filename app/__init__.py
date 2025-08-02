@@ -23,8 +23,10 @@ def create_app(service=None):
     if service is None:
         # Use file-based database for CI/testing and development/production
         import os
-        print(f"[DEBUG] TESTING={os.getenv('TESTING')}")
-        engine = create_engine("sqlite:///./tasks.db")
+        is_testing = os.getenv("TESTING") == "true" or os.getenv("CI") == "true"
+        db_path = "/tmp/tasks.db" if is_testing else "./tasks.db"
+        print(f"[DEBUG] TESTING={os.getenv('TESTING')}, CI={os.getenv('CI')}, db_path={db_path}")
+        engine = create_engine(f"sqlite:///{db_path}")
         
         # Create session factory
         Session = sessionmaker(bind=engine)
