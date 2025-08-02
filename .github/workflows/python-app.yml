@@ -63,6 +63,8 @@
             # Step 5: Start Flask server in background  
             - name: Start Flask server in background
               run: |
+                # Set testing environment for Flask server
+                export TESTING=true
                 nohup python -m app.main &
 
             # Step 6: Wait for Flask server to be ready (health check loop)
