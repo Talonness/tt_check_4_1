@@ -82,8 +82,10 @@ jobs:
           export TESTING=true
           export PYTHONDONTWRITEBYTECODE=1
           export PYTHONWARNINGS="ignore:unclosed:ResourceWarning"
-          # Run all tests with coverage tracking
-          pytest --cov=app --cov-report=term-missing --cov-report=html || true
+          # Run all tests with coverage tracking and output results to XML
+          pytest --cov=app --cov-report=term-missing --cov-report=html --junitxml=results.xml
+          # Check if only allowed tests failed
+          python scripts/ci_check_allowed_failures.py
           echo "✅ All tests completed (some may have failed, see summary below)"
           echo "::notice::CI completed successfully. Warnings are suppressed for clarity."
           echo "::notice::CI completed successfully. Warnings are suppressed for clarity."
