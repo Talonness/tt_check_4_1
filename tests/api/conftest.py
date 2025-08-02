@@ -11,7 +11,7 @@ def reset_api_tasks():
     """
     try:
         # First check if server is alive
-        health_resp = requests.get("http://localhost:5000/health", timeout=5)
+        health_resp = requests.get("http://localhost:5000/api/health", timeout=5)
         if health_resp.status_code != 200:
             pytest.skip(f"Server health check failed with status {health_resp.status_code}")
         
