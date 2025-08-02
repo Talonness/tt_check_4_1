@@ -47,6 +47,10 @@ jobs:
           rm -f tasks.db app/data/tasks.json
           echo "✅ Test environment prepared"
       
+      - name: Ensure clean database file
+        run: |
+          rm -f tasks.db
+
       - name: Start Flask server in background
         run: |
           export TESTING=true
