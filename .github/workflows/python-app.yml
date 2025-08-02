@@ -66,13 +66,24 @@
                 # Set environment variables for testing
                 export TESTING=true
                 export PYTHONDONTWRITEBYTECODE=1
+                export FLASK_APP=app.main
+                export FLASK_ENV=testing
                 # Start Flask server in background for API integration tests
                 cd $GITHUB_WORKSPACE
-                python -m app.main &
+                python -c "
+                import os
+                os.environ['TESTING'] = 'true'
+                from app import create_app
+                app = create_app()
+                print('Database tables created successfully')
+                print('Starting Flask server...')
+                app.run(host='127.0.0.1', port=5000, debug=False)
+                " &
                 # Wait for server to start
-                sleep 5
+                sleep 8
                 # Verify server is responding
-                curl -f http://localhost:5000/health || echo "Server not ready yet, continuing anyway"
+                curl -f http://localhost:5000/health || echo "Server health check failed, continuing anyway"
+                curl -f http://localhost:5000/api/tasks || echo "API endpoint check failed, continuing anyway"
               continue-on-error: true
 
             # Step 6: Run tests with coverage tracking
