@@ -68,24 +68,40 @@ def client(app):
 # 📍 Location of the persistent task file
 TASKS_FILE = os.path.join("app", "data", "tasks.json")
 
-# Reset tasks before and after each test (for file-backed service)
+# Reset tasks before and after each test (works with both file and database storage)
 @pytest.fixture(autouse=True)
 def reset_tasks(client):
+    # Clean up before test
     try:
         response = client.post("/api/tasks/reset")
         assert response.status_code == 200
     except Exception:
+        # Fallback for JSON file if database reset fails
         os.makedirs(os.path.dirname(TASKS_FILE), exist_ok=True)
         with open(TASKS_FILE, "w") as f:
             json.dump([], f)
+        # Also try to clean database file
+        if os.path.exists("tasks.db"):
+            try:
+                os.remove("tasks.db")
+            except PermissionError:
+                pass
 
     yield  # Execute the test
 
+    # Clean up after test
     try:
         client.post("/api/tasks/reset")
     except Exception:
-        with open(TASKS_FILE, "w") as f:
-            json.dump([], f)
+        # Fallback cleanup
+        if os.path.exists(TASKS_FILE):
+            with open(TASKS_FILE, "w") as f:
+                json.dump([], f)
+        if os.path.exists("tasks.db"):
+            try:
+                os.remove("tasks.db")
+            except PermissionError:
+                pass
 
 # ============================================
 # 🔧 Database Setup for SQLAlchemy (Sprint 4)

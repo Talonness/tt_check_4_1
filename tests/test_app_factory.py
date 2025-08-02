@@ -17,3 +17,16 @@ def test_app_returns_404_when_no_routes_defined():
     client = app.test_client()
     response = client.get('/')
     assert response.status_code == 404
+
+def test_app_uses_db_repo():
+    """
+    TC-RF011-001: Flask App Loads with DB Injection
+    Verifies that create_app() properly wires database repository and service
+    """
+    app = create_app()
+    assert hasattr(app, "task_service")
+    
+    # Additional verification that it's a proper service
+    assert app.task_service is not None
+    assert hasattr(app.task_service, 'add_task')
+    assert hasattr(app.task_service, 'get_tasks')

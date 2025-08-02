@@ -1,39 +1,47 @@
-# app/__init__.py
+# app/__init__.py (Database-wired version)
+
 from flask import Flask, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from app.models.sqlalchemy_task import Base  # ✅ Correct import
+from app.repositories.database_task_repository import DatabaseTaskRepository
+from app.services.task_service import TaskService
 from app.routes.tasks import tasks_bp
 from app.routes.health import health_bp
-# ✅ Phase 2: Import services for dependency injection
-from app.services.task_service import TaskService
-from app.services.task_storage import task_storage
-
 
 def create_app(service=None):
     """
-    US015 - `tests/error/test_error_handling.py`
+    Sprint 4: Database-wired Flask application
     """
     app = Flask(__name__)
+
+    # 🔧 Database Setup (only if no service provided via dependency injection)
+    if service is None:
+        # Create SQLite database engine
+        engine = create_engine("sqlite:///tasks.db")
+        
+        # Create session factory
+        Session = sessionmaker(bind=engine)
+        
+        # Create database tables
+        Base.metadata.create_all(engine)  # Creates tasks.db and tables
+        
+        # Wire up the repository and service
+        repo = DatabaseTaskRepository(Session)
+        service = TaskService(repo)
+    
+    # Inject the service into the app
+    app.task_service = service
 
     # Register Blueprints
     app.register_blueprint(tasks_bp)
     app.register_blueprint(health_bp)
 
-    # Dependency Injection: use provided service or default TaskService
-    if service is None:
-        service = TaskService(task_storage)
-    app.task_service = service
-
-
-    # NOTE FOR STUDENTS:
-    # These error handlers are registered globally when the Flask app is created.
-    # This is a feature of Flask: once registered, they automatically apply to all routes in the app.
-    # You do NOT need to reference or call them in your route files—they are always active.
-
-    # Global error handler for 400 Bad Request
+    # Global error handlers
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({"error": "Bad Request"}), 400
 
-    # Global error handler for 404 Not Found
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({"error": "Not Found"}), 404
