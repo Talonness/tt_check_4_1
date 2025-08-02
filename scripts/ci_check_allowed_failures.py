@@ -18,6 +18,7 @@ def main():
             name = testcase.attrib.get('name')
             if name:
                 failed.append(name)
+    print("Failed tests:", failed)
     # If any failed test is not in the allowed list, fail CI
     for f in failed:
         if f not in ALLOWED_FAILURES:
