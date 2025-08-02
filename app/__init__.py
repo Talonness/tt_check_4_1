@@ -8,6 +8,7 @@ from app.repositories.database_task_repository import DatabaseTaskRepository
 from app.services.task_service import TaskService
 from app.routes.tasks import tasks_bp
 from app.routes.health import health_bp
+# UI blueprint imported inside create_app to avoid circular imports
 
 def create_app(service=None):
     """
@@ -42,6 +43,10 @@ def create_app(service=None):
     # Register Blueprints
     app.register_blueprint(tasks_bp)
     app.register_blueprint(health_bp)
+    
+    # Import and register UI Blueprint (imported here to avoid circular imports)
+    from app.routes.ui import ui_bp
+    app.register_blueprint(ui_bp) # ✅ Enables /tasks/new route for web form
 
     # Global error handlers
     @app.errorhandler(400)
