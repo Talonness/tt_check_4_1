@@ -226,6 +226,51 @@ class APITaskRepository(TaskRepository):
 
 ---
 
+## 🎨 UI Development Best Practices
+
+### **Recommended Development Order:**
+
+When adding web UI to your Flask application, follow this sequence:
+
+1. **Templates First**:
+   ```bash
+   # Create base template
+   app/templates/base.html
+   
+   # Create specific page templates
+   app/templates/add_task.html
+   app/templates/view_tasks.html
+   ```
+
+2. **Routes Second**:
+   ```python
+   # Create UI blueprint
+   app/routes/ui.py
+   
+   # Reference existing templates
+   return render_template("add_task.html")
+   ```
+
+3. **Test Integration**:
+   ```bash
+   # Start server and test routes
+   python -m app.main
+   curl http://127.0.0.1:5000/tasks/new
+   ```
+
+### **Why Templates First?**
+- **Clear Error Messages**: Missing templates give immediate feedback
+- **Visual Development**: See HTML structure before adding Flask logic
+- **Fail Fast**: Template errors are easier to debug than empty responses
+- **Dependencies**: Routes depend on templates, not vice versa
+
+### **Common Pitfalls**:
+- Empty responses (200 OK with no content) when templates missing
+- Circular import errors when blueprint imports aren't in `create_app()`
+- Missing `__init__.py` files in route packages
+
+---
+
 ## 📊 Current Test Results
 
 ### **Sprint 4 Database Tests:**
