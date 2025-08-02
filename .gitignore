@@ -209,6 +209,7 @@ __marimo__/
 # Test data files
 app/data/tasks.json
 app/data/*.json
+tasks.db
 
 # But keep the directory structure
 !app/data/.gitkeep  
