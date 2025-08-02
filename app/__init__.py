@@ -12,20 +12,21 @@ from app.routes.health import health_bp
 
 def create_app(service=None):
     """
+    
+    import os
+    print(f"[DEBUG] Flask app created. TESTING={os.getenv('TESTING')}")
     Sprint 4: Database-wired Flask application
     """
     app = Flask(__name__)
 
     # 🔧 Database Setup (only if no service provided via dependency injection)
     if service is None:
-        # Use in-memory database for testing to avoid permission issues
+        # Use file-based database for CI/testing and development/production
         import os
-        if os.getenv('TESTING') == 'true' or app.config.get('TESTING'):
-            # In-memory database for CI/testing
-            engine = create_engine("sqlite:///:memory:")
-        else:
-            # File-based database for development/production
-            engine = create_engine("sqlite:///tasks.db")
+        is_testing = os.getenv("TESTING") == "true" or os.getenv("CI") == "true"
+        db_path = "/tmp/tasks.db" if is_testing else "./tasks.db"
+        print(f"[DEBUG] TESTING={os.getenv('TESTING')}, CI={os.getenv('CI')}, db_path={db_path}")
+        engine = create_engine(f"sqlite:///{db_path}")
         
         # Create session factory
         Session = sessionmaker(bind=engine)

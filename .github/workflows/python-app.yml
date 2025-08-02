@@ -64,7 +64,7 @@ jobs:
             if curl -s http://localhost:5000/api/health > /dev/null; then
               echo "Flask server is up!"
               break
-            
+            fi
             echo "Waiting for Flask server... ($i/20)"
             sleep 1
           done
@@ -83,19 +83,10 @@ jobs:
           export PYTHONDONTWRITEBYTECODE=1
           export PYTHONWARNINGS="ignore:unclosed:ResourceWarning"
           # Run all tests with coverage tracking and output results to XML
-          pytest --cov=app --cov-report=term-missing --cov-report=html --junitxml=results.xml || true
-          # Check if only allowed tests failed
-          python scripts/ci_check_allowed_failures.py
-          echo "✅ All tests completed (some may have failed, see summary below)"
-          echo "::notice::CI completed successfully. Warnings are suppressed for clarity."
-          
+          pytest --cov=app --cov-report=term-missing --cov-report=html --junitxml=results.xml
         env:
           TESTING: true
           PYTHONDONTWRITEBYTECODE: 1
           PYTHONWARNINGS: "ignore:unclosed:ResourceWarning"
 
-      - name: CI Result Summary
-        run: |
-          echo "::notice::CI finished. All tests executed. Warnings are suppressed for clean output."
-          echo "::notice::Test scope: All tests in the 'tests/' directory were executed using pytest with coverage. Purpose: To verify application functionality and database integration for Sprint 4."
-          echo "::notice::Note: Only specific tests (e.g., end-to-end API tests) may fail due to known issues. These do not block merges for students. Please review the job log for details."
+      # Removed custom CI summary and allowed-failures logic for standard pytest behavior
