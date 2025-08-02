@@ -151,6 +151,13 @@ def direct_file_reset():
 # 🔧 Database Setup for SQLAlchemy (Sprint 4)
 # ============================================
 
+# 🚩 STUDENT NOTE FOR SPRINT 5 (Robot Framework):
+# For unit tests, we use an in-memory SQLite database (fast, disposable, not persistent).
+# For end-to-end tests (Robot Framework, Selenium, etc.), you will switch to a file-based SQLite database (sqlite:///tasks.db)
+# This makes your test data persistent and matches real-world usage.
+# You will need to clean up tasks.db before/after Robot tests to ensure a fresh state.
+# This is NORMAL and expected for E2E testing!
+
 @pytest.fixture
 def session_factory():
     """Provides a clean in-memory database session factory for SQLAlchemy tests."""
@@ -172,3 +179,10 @@ def database_test_app(session_factory):
 def database_client(database_test_app):
     """Flask test client using in-memory DB and DI-injected service."""
     return database_test_app.test_client()
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup_engine():
+    app = create_app()
+    yield
+    if hasattr(app, "database_engine"):
+        app.database_engine.dispose()
