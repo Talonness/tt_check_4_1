@@ -47,6 +47,30 @@ jobs:
           rm -f tasks.db app/data/tasks.json
           echo "✅ Test environment prepared"
       
+      - name: Start Flask server in background
+        run: |
+          export TESTING=true
+          nohup python -m app.main &
+          sleep 3
+
+      - name: Wait for Flask server to be ready
+        run: |
+          for i in {1..20}; do
+            if curl -s http://localhost:5000/api/health > /dev/null; then
+              echo "Flask server is up!"
+              break
+            fi
+            echo "Waiting for Flask server... ($i/20)"
+            sleep 1
+          done
+          # Final check
+          if curl -s http://localhost:5000/api/health > /dev/null; then
+            echo "Server health check passed"
+          else
+            echo "Server health check failed"
+            exit 1
+          fi
+
       - name: Run all tests with coverage
         run: |
           # Set environment variables for testing
