@@ -64,7 +64,7 @@ jobs:
             if curl -s http://localhost:5000/api/health > /dev/null; then
               echo "Flask server is up!"
               break
-            
+            fi
             echo "Waiting for Flask server... ($i/20)"
             sleep 1
           done
