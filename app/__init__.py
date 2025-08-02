@@ -12,6 +12,9 @@ from app.routes.health import health_bp
 
 def create_app(service=None):
     """
+    
+    import os
+    print(f"[DEBUG] Flask app created. TESTING={os.getenv('TESTING')}")
     Sprint 4: Database-wired Flask application
     """
     app = Flask(__name__)
