@@ -17,8 +17,10 @@ def main():
         for failure in testcase.findall('failure'):
             name = testcase.attrib.get('name')
             if name:
-                failed.append(name)
-    print("Failed tests:", failed)
+                # Extract function name if nodeid format
+                func_name = name.split('::')[-1] if '::' in name else name
+                failed.append(func_name)
+    print("Failed tests (function names):", failed)
     # If any failed test is not in the allowed list, fail CI
     for f in failed:
         if f not in ALLOWED_FAILURES:
