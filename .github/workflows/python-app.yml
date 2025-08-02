@@ -60,7 +60,22 @@
                 rm -f tasks.db app/data/tasks.json
                 echo "Test environment prepared for Sprint 4 database integration"
 
-            # Step 5: Run tests with coverage tracking
+            # Step 5: Start Flask server for integration tests
+            - name: Start Flask server
+              run: |
+                # Set environment variables for testing
+                export TESTING=true
+                export PYTHONDONTWRITEBYTECODE=1
+                # Start Flask server in background for API integration tests
+                cd $GITHUB_WORKSPACE
+                python -m app.main &
+                # Wait for server to start
+                sleep 5
+                # Verify server is responding
+                curl -f http://localhost:5000/health || echo "Server not ready yet, continuing anyway"
+              continue-on-error: true
+
+            # Step 6: Run tests with coverage tracking
             - name: Run tests with coverage
               run: |
                 # Set environment variables for testing
@@ -68,12 +83,11 @@
                 export PYTHONDONTWRITEBYTECODE=1
                 # Suppress ResourceWarnings for cleaner CI output (these are normal for educational code)
                 export PYTHONWARNINGS="ignore:unclosed:ResourceWarning"
-                # Run tests with proper permissions (skip live API tests that require running server)
-                pytest --cov=app --cov-report=term-missing -k "not (test_add_and_get_tasks_end_to_end or test_complete_task_end_to_end or test_delete_task_end_to_end)"
+                # Run all tests including live server tests
+                pytest --cov=app --cov-report=term-missing
                 #  This runs pytest and measures how much of the 'app' folder is tested
                 # --cov=app → tracks coverage in the 'app' directory
                 # --cov-report=term-missing → shows which lines were not tested
-                # -k → skips live server tests that need background Flask server
       
             # (Optional) Step 5: Enforce a minimum test coverage percentage
             # - name: Enforce minimum coverage
